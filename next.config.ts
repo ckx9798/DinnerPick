@@ -1,7 +1,17 @@
-import type { NextConfig } from "next";
+/**
+ * @format
+ * @type {import('next').NextConfig}
+ */
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
