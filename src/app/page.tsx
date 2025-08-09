@@ -94,6 +94,41 @@ export default function HomePage() {
         </motion.button>
       </div>
 
+      {/* 장르별 필터링 */}
+      <div className="text-center">
+        <h3 className="text-lg font-semibold mb-4 text-gray-700">
+          장르별 필터링
+        </h3>
+        <div className="flex justify-center space-x-2">
+          {["all", "korean", "western", "chinese"].map((filter) => (
+            <motion.button
+              key={filter}
+              onClick={() =>
+                setCurrentCategory(
+                  filter as "all" | "korean" | "western" | "chinese"
+                )
+              }
+              whileTap={{ scale: 0.95 }}
+              className={`px-4 py-2 rounded-full font-medium transition-colors duration-300 ${
+                currentCategory === filter
+                  ? "bg-emerald-500 text-white shadow-md"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              {filter === "all"
+                ? "전체"
+                : filter === "korean"
+                ? "한식"
+                : filter === "western"
+                ? "양식"
+                : "중식"}
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
+      <hr className="my-8 border-t-2 border-gray-200" />
+
       {/* 모달 */}
       <AnimatePresence>{isModalOpen && <FilteringBtn />}</AnimatePresence>
     </div>
