@@ -8,19 +8,20 @@ import { useEffect, useState } from "react";
 import FilterSection from "@/features/filter-food/FilterSection";
 import { Food } from "@/shared/types/type";
 import FoodWorldCup from "@/features/food-world-cup/FoodWorldCup";
+import { HeartIcon } from "@heroicons/react/24/solid";
+import LikedFoodsUI from "@/features/like-food/LikedFoodsUI";
 import LikedPanel from "@/features/like-food/LikePanel";
 import RecommendCard from "@/features/recommend-food/RecommendCard";
 import { initialFood } from "@/shared/types/constants";
 
 export default function HomePage() {
-  // --- 상태 관리 (State Management) ---
   const [currentFood, setCurrentFood] = useState<Food>(initialFood);
   const [detailedFilters, setDetailedFilters] = useState<{
     [key: string]: any;
   }>({});
   const [isLoading, setIsLoading] = useState(true);
   const [likedFoods, setLikedFoods] = useState<Food[]>([]);
-  const [isPanelVisible, setIsPanelVisible] = useState(false);
+  const [isPanelModalOpen, setIsPanelModalOpen] = useState(false);
   const [isWorldCupActive, setIsWorldCupActive] = useState(false);
 
   // --- 음식추천 API ---
@@ -114,15 +115,14 @@ export default function HomePage() {
       updatedLikedFoods = [...likedFoods, currentFood];
     }
     setLikedFoods(updatedLikedFoods);
-    setIsPanelVisible(updatedLikedFoods.length > 0);
   };
 
-  // --- 월드컵 찜하기 제거 ---ㄴ
+  // --- 월드컵 찜하기 제거 ---
   const handleRemoveFromPanel = (id: number) => {
     const updatedLikedFoods = likedFoods.filter((food) => food.id !== id);
     setLikedFoods(updatedLikedFoods);
     if (updatedLikedFoods.length === 0) {
-      setIsPanelVisible(false);
+      setIsPanelModalOpen(false); // 모달도 닫아줌
     }
   };
 
@@ -167,7 +167,7 @@ export default function HomePage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
       <div className="relative">
-        <div className="bg-white p-12 rounded-2xl shadow-xl w-full max-w-xl">
+        <div className="bg-white p-4 md:p-12 rounded-2xl shadow-xl w-full max-w-xl my-6">
           <RecommendCard
             food={currentFood}
             isLoading={isLoading}
@@ -187,31 +187,22 @@ export default function HomePage() {
             onResetFilters={resetFilters}
           />
         </div>
-
-        <AnimatePresence>
-          {isPanelVisible && (
-            <motion.div
-              className="absolute left-full top-0 ml-12"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ ease: "easeInOut", duration: 0.3 }}
-            >
-              <LikedPanel
-                likedFoods={likedFoods}
-                onStartWorldCup={startWorldCup}
-                onRemoveFood={handleRemoveFromPanel}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
+
+      <LikedFoodsUI
+        likedFoods={likedFoods}
+        isPanelModalOpen={isPanelModalOpen}
+        setIsPanelModalOpen={setIsPanelModalOpen}
+        onStartWorldCup={startWorldCup}
+        onRemoveFood={handleRemoveFromPanel}
+      />
 
       <AnimatePresence>
         {isWorldCupActive && (
           <FoodWorldCup
             initialFoods={likedFoods}
             onClose={() => setIsWorldCupActive(false)}
+            setIsPanelModalOpen={setIsPanelModalOpen}
           />
         )}
       </AnimatePresence>
