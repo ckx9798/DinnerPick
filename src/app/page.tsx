@@ -54,6 +54,31 @@ export default function HomePage() {
     recommendFood();
   }, []);
 
+  // --- 필터 변경 로직 ---
+  const handleFilterChange = (key: string, value: string) => {
+    const newFilters = {
+      ...detailedFilters,
+      [key]: detailedFilters[key] === value ? "" : value,
+    };
+    setDetailedFilters(newFilters);
+    if (key === "category") {
+      recommendFood(newFilters);
+    }
+  };
+
+  // --- 개인 필터 적용 ---
+  const handleDetailedSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    recommendFood(detailedFilters);
+  };
+
+  // --- 필터 초기화 ---
+  const resetFilters = () => {
+    const newFilters = { category: detailedFilters.category };
+    setDetailedFilters(newFilters);
+    recommendFood(newFilters);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
       <div className="relative">
