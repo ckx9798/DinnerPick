@@ -99,6 +99,47 @@ export default function HomePage() {
     }
   };
 
+  // --- 월드컵 찜하기 로직 ---
+  const handleLike = () => {
+    if (!currentFood || currentFood.id === 0) return;
+    const isAlreadyLiked = likedFoods.some(
+      (food) => food.id === currentFood.id
+    );
+    let updatedLikedFoods;
+    if (isAlreadyLiked) {
+      updatedLikedFoods = likedFoods.filter(
+        (food) => food.id !== currentFood.id
+      );
+    } else {
+      updatedLikedFoods = [...likedFoods, currentFood];
+    }
+    setLikedFoods(updatedLikedFoods);
+    setIsPanelVisible(updatedLikedFoods.length > 0);
+  };
+
+  // --- 월드컵 찜하기 제거 ---ㄴ
+  const handleRemoveFromPanel = (id: number) => {
+    const updatedLikedFoods = likedFoods.filter((food) => food.id !== id);
+    setLikedFoods(updatedLikedFoods);
+    if (updatedLikedFoods.length === 0) {
+      setIsPanelVisible(false);
+    }
+  };
+
+  // --- 월드컵 실행 ---
+  const startWorldCup = () => {
+    if (likedFoods.length < 2) {
+      alert("월드컵을 시작하려면 2개 이상의 메뉴를 찜해야 합니다.");
+      return;
+    }
+    setIsWorldCupActive(true);
+  };
+
+  const isLiked = likedFoods.some((food) => food.id === currentFood.id);
+  const isDetailedFilterActive = Object.entries(detailedFilters).some(
+    ([key, value]) => key !== "category" && value
+  );
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
       <div className="relative">
