@@ -8,7 +8,7 @@ import { personalFilter } from "@/shared/types/constants";
 import { useState } from "react";
 
 interface FilterSectionProps {
-  filters: { [key: string]: any };
+  filters: { [key: string]: string };
   isDetailedFilterActive: boolean;
   onFilterChange: (key: string, value: string) => void;
   onDetailedSubmit: (e: React.FormEvent) => void;
