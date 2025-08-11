@@ -2,27 +2,25 @@
 
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
+import { AnimatePresence } from "framer-motion";
 import FilterSection from "@/features/filter-food/FilterSection";
 import { Food } from "@/shared/types/type";
 import FoodWorldCup from "@/features/food-world-cup/FoodWorldCup";
-import { HeartIcon } from "@heroicons/react/24/solid";
 import LikedFoodsUI from "@/features/like-food/LikedFoodsUI";
-import LikedPanel from "@/features/like-food/LikePanel";
 import RecommendCard from "@/features/recommend-food/RecommendCard";
 import { initialFood } from "@/shared/types/constants";
 
 export default function HomePage() {
   const [currentFood, setCurrentFood] = useState<Food>(initialFood);
-  const [detailedFilters, setDetailedFilters] = useState<{
-    [key: string]: any;
-  }>({});
   const [isLoading, setIsLoading] = useState(true);
   const [likedFoods, setLikedFoods] = useState<Food[]>([]);
   const [isPanelModalOpen, setIsPanelModalOpen] = useState(false);
   const [isWorldCupActive, setIsWorldCupActive] = useState(false);
+  const [detailedFilters, setDetailedFilters] = useState<{
+    [key: string]: string;
+  }>({});
 
   // --- 음식추천 API ---
   const recommendFood = async (filters = detailedFilters) => {
@@ -52,7 +50,21 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    recommendFood();
+    const fetchInitialFood = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/recommend`);
+        if (!response.ok) throw new Error("API response not ok");
+        const recommendedMenu = await response.json();
+        setCurrentFood(recommendedMenu || initialFood);
+      } catch (error) {
+        console.error("Failed to fetch initial food:", error);
+        alert("초기 메뉴 추천 중 오류가 발생했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchInitialFood();
   }, []);
 
   // --- 필터 변경 로직 ---
@@ -62,15 +74,11 @@ export default function HomePage() {
       [key]: detailedFilters[key] === value ? "" : value,
     };
     setDetailedFilters(newFilters);
-    if (key === "category") {
-      recommendFood(newFilters);
-    }
   };
 
   // --- 개인 필터 적용 ---
   const handleDetailedSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    recommendFood(detailedFilters);
   };
 
   // --- 필터 초기화 ---
