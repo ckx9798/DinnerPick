@@ -135,6 +135,30 @@ export default function HomePage() {
     setIsWorldCupActive(true);
   };
 
+  // --- 공유하기 로직 ---
+  const handleShare = async () => {
+    if (!currentFood || currentFood.id === 0) {
+      alert("공유할 메뉴가 추천되지 않았습니다.");
+      return;
+    }
+
+    // --- Web API 지원 확인 ---
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "오늘 뭐 먹을까?",
+          text: `오늘 메뉴로 '${currentFood.name}' 어때? 같이 먹자! 😋`,
+          url: window.location.href,
+        });
+        console.log("공유 성공!");
+      } catch (error) {
+        console.error("공유 실패:", error);
+      }
+    } else {
+      alert("이 브라우저에서는 공유하기 기능이 지원되지 않습니다.");
+    }
+  };
+
   const isLiked = likedFoods.some((food) => food.id === currentFood.id);
   const isDetailedFilterActive = Object.entries(detailedFilters).some(
     ([key, value]) => key !== "category" && value
@@ -152,6 +176,7 @@ export default function HomePage() {
             onLike={handleLike}
             onGoToYoutube={moveToYoutube}
             onGoToNaverMap={moveToNaverMap}
+            onShare={handleShare}
           />
           <hr className="my-8 border-t-2 border-gray-200" />
           <FilterSection

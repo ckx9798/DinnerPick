@@ -1,7 +1,7 @@
 /** @format */
 
 import { AnimatePresence, motion } from "framer-motion";
-import { FaHeart, FaMapMarkedAlt, FaYoutube } from "react-icons/fa";
+import { FaHeart, FaMapMarkedAlt, FaShareAlt, FaYoutube } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
 import { Food } from "@/shared/types/type";
@@ -16,8 +16,10 @@ interface RecommendCardProps {
   onLike: () => void;
   onGoToYoutube: () => void;
   onGoToNaverMap: () => void;
+  onShare: () => void;
 }
 
+// --- 음식 추천 영역 ---
 export default function RecommendCard({
   food,
   isLoading,
@@ -26,6 +28,7 @@ export default function RecommendCard({
   onLike,
   onGoToYoutube,
   onGoToNaverMap,
+  onShare,
 }: RecommendCardProps) {
   // --- 이미지 에러 관리 ---
   const [isImageError, setIsImageError] = useState(false);
@@ -101,6 +104,14 @@ export default function RecommendCard({
           >
             <FaMapMarkedAlt className="w-8 h-8" />
             <p className="text-sm font-semibold mt-1">주변 맛집찾기</p>
+          </div>
+          {/* 공유하기 */}
+          <div
+            className="flex flex-col items-center text-gray-600 hover:text-blue-500 cursor-pointer"
+            onClick={onShare}
+          >
+            <FaShareAlt className="w-8 h-8" />
+            <p className="text-sm font-semibold mt-1">공유하기</p>
           </div>
         </div>
       </div>
