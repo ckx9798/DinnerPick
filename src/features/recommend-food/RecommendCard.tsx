@@ -39,22 +39,28 @@ export default function RecommendCard({
 
   return (
     <>
-      <div className="h-[300px] mb-6 flex justify-center items-center">
-        {/* --- 이미지 영역 --- */}
+      <div className="relative w-full aspect-[4/3] mb-6 rounded-lg bg-gray-200">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={food.id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
-            className="w-full h-full"
-          >
-            {isLoading ? (
-              <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center animate-pulse">
-                <span className="text-gray-500">메뉴 찾는 중...</span>
-              </div>
-            ) : (
+          {isLoading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="w-full h-full bg-gray-300 rounded-lg flex items-center justify-center animate-pulse"
+            >
+              <span className="text-gray-200 font-medium">...</span>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={food.id || "final"}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.4 }}
+              className="w-full h-full"
+            >
               <Image
                 src={
                   isImageError
@@ -62,14 +68,13 @@ export default function RecommendCard({
                     : food.image_url || initialFood.image_url
                 }
                 alt={food.name}
-                width={400}
-                height={300}
-                className="rounded-lg shadow-md object-cover w-full h-full"
+                fill
+                className="rounded-lg shadow-md object-cover"
                 priority
                 onError={() => setIsImageError(true)}
               />
-            )}
-          </motion.div>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
