@@ -79,6 +79,26 @@ export default function HomePage() {
     recommendFood(newFilters);
   };
 
+  // --- 유튜브 이동 로직 ---
+  const moveToYoutube = () => {
+    if (currentFood.name && currentFood.name !== "뭐먹지?") {
+      const query = `${currentFood.name} 먹방`;
+      const encodedQuery = encodeURIComponent(query);
+      const youtubeUrl = `https://www.youtube.com/results?search_query=${encodedQuery}`;
+      window.open(youtubeUrl, "_blank");
+    }
+  };
+
+  // --- 네이버 이동 로직 ---
+  const moveToNaverMap = () => {
+    if (currentFood.name && currentFood.name !== "뭐먹지?") {
+      const query = currentFood.name;
+      const encodedQuery = encodeURIComponent(query);
+      const naverMapUrl = `https://map.naver.com/p/search/${encodedQuery}`;
+      window.open(naverMapUrl, "_blank");
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
       <div className="relative">
