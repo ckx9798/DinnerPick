@@ -47,7 +47,7 @@ export default function RecommendCard({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
             className="w-full h-full"
           >
             {isLoading ? (
@@ -56,7 +56,6 @@ export default function RecommendCard({
               </div>
             ) : (
               <Image
-                // --- 이미지 없을 시 기본 이미지 적용 ---
                 src={
                   isImageError
                     ? initialFood.image_url
@@ -76,9 +75,13 @@ export default function RecommendCard({
 
       {/* --- 음식 설명 영역 --- */}
       <div className="text-center mb-6 min-h-[60px]">
-        <h2 className="text-3xl font-bold text-gray-800">{food.name}</h2>
-        <p className="text-gray-600 mt-2">{food.description}</p>
-        <div className="flex justify-center space-x-8 mt-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+          {food.name}
+        </h2>
+        <p className="text-gray-600 mt-2 text-xs md:text-md">
+          {food.description}
+        </p>
+        <div className="flex justify-center space-x-4 md:space-x-8 mt-5">
           {/* 찜하기 */}
           <div
             className={`flex flex-col items-center cursor-pointer transition-colors duration-200 ${
@@ -86,32 +89,38 @@ export default function RecommendCard({
             }`}
             onClick={onLike}
           >
-            <FaHeart className="w-8 h-8" />
-            <p className="text-sm font-semibold mt-1">월드컵 찜하기</p>
+            <FaHeart className="w-6 h-6 md:w-8 md:h-8" />
+            <p className="text-xs md:text-sm font-semibold mt-1">
+              월드컵 찜하기
+            </p>
           </div>
           {/* 유튜브 */}
           <div
             className="flex flex-col items-center text-gray-600 hover:text-red-500 cursor-pointer"
             onClick={onGoToYoutube}
           >
-            <FaYoutube className="w-8 h-8" />
-            <p className="text-sm font-semibold mt-1">관련 먹방보기</p>
+            <FaYoutube className="w-6 h-6 md:w-8 md:h-8" />
+            <p className="text-xs md:text-sm font-semibold mt-1">
+              관련 먹방보기
+            </p>
           </div>
           {/* 네이버 */}
           <div
             className="flex flex-col items-center text-gray-600 hover:text-yellow-500 cursor-pointer"
             onClick={onGoToNaverMap}
           >
-            <FaMapMarkedAlt className="w-8 h-8" />
-            <p className="text-sm font-semibold mt-1">주변 맛집찾기</p>
+            <FaMapMarkedAlt className="w-6 h-6 md:w-8 md:h-8" />
+            <p className="text-xs md:text-sm font-semibold mt-1">
+              주변 맛집찾기
+            </p>
           </div>
           {/* 공유하기 */}
           <div
             className="flex flex-col items-center text-gray-600 hover:text-blue-500 cursor-pointer"
             onClick={onShare}
           >
-            <FaShareAlt className="w-8 h-8" />
-            <p className="text-sm font-semibold mt-1">공유하기</p>
+            <FaShareAlt className="w-6 h-6 md:w-8 md:h-8" />
+            <p className="text-xs md:text-sm font-semibold mt-1">공유하기</p>
           </div>
         </div>
       </div>
@@ -122,7 +131,7 @@ export default function RecommendCard({
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         disabled={isLoading}
-        className="w-full bg-emerald-500 text-white font-bold py-3 rounded-lg hover:bg-emerald-600 transition-colors duration-300 disabled:bg-gray-400"
+        className="w-full bg-emerald-500 text-white font-bold py-3 rounded-lg hover:bg-emerald-600 transition-colors duration-300 disabled:bg-gray-400 cursor-pointer"
       >
         다른 메뉴 추천
       </motion.button>

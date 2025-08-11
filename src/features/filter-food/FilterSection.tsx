@@ -1,8 +1,8 @@
 /** @format */
 
 import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDownIcon, XCircleIcon } from "@heroicons/react/24/solid";
 
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { categoryMap } from "@/shared/types/type";
 import { personalFilter } from "@/shared/types/constants";
 import { useState } from "react";
@@ -36,12 +36,12 @@ export default function FilterSection({
         <h3 className="text-lg font-semibold mb-4 text-gray-700 text-center">
           음식 종류 선택
         </h3>
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-3 md:gap-4">
           {Object.entries(categoryMap).map(([label, value]) => (
             <motion.button
               key={label}
               onClick={() => onFilterChange("category", value)}
-              className={`px-4 py-2 rounded-full font-medium transition-colors duration-200 text-sm ${
+              className={`px-3 md:px-4 py-2 rounded-full font-medium transition-colors duration-200 text-xs md:text-sm ${
                 (filters.category || "") === value
                   ? "bg-emerald-500 text-white shadow-md font-bold"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -58,7 +58,7 @@ export default function FilterSection({
       {/* --- 개인 상세 조건 설정 영역 ---  */}
       <motion.button
         onClick={() => setIsModalOpen(true)}
-        className={`w-full font-bold py-3 rounded-lg transition-colors duration-300 flex items-center justify-center ${
+        className={`w-full font-bold py-3 mb-3 rounded-lg transition-colors duration-300 flex items-center justify-center cursor-pointer ${
           isDetailedFilterActive
             ? "bg-indigo-600 text-white shadow-md font-semibold"
             : "bg-blue-500 text-white hover:bg-indigo-600"
@@ -82,6 +82,15 @@ export default function FilterSection({
               className="bg-gray-50 p-6 rounded-2xl shadow-2xl w-full max-w-lg relative max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="absolute top-4 right-4 p-2 text-gray-500 rounded-full cursor-pointer"
+                aria-label="닫기"
+              >
+                <XCircleIcon className="w-6 h-6 -mr-2" />
+              </button>
+
               <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
                 개인별 상세 조건 설정
               </h2>
@@ -96,7 +105,7 @@ export default function FilterSection({
                       {options.map((opt) => (
                         <label
                           key={opt}
-                          className={`flex items-center justify-center space-x-2 px-3 py-2 rounded-lg border cursor-pointer text-sm font-medium ${
+                          className={`flex items-center justify-center space-x-2 w-22 py-1.5 md:py-2 rounded-xl border cursor-pointer text-sm font-medium ${
                             filters[key] === opt
                               ? "bg-emerald-500 text-white"
                               : "bg-white text-gray-400"

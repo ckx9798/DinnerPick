@@ -2,18 +2,21 @@
 
 import { FaTrophy } from "react-icons/fa";
 import { Food } from "@/shared/types/type";
+import { XCircleIcon } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 
 interface LikedPanelProps {
   likedFoods: Food[];
   onStartWorldCup: () => void;
   onRemoveFood: (id: number) => void;
+  onClose?: () => void;
 }
 
 export default function LikedPanel({
   likedFoods,
   onStartWorldCup,
   onRemoveFood,
+  onClose,
 }: LikedPanelProps) {
   const canStartWorldCup = likedFoods.length >= 2;
 
@@ -23,11 +26,22 @@ export default function LikedPanel({
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ ease: "easeInOut", duration: 0.3 }}
-      className="w-80 bg-white shadow-xl rounded-lg p-6 flex flex-col h-[650px]"
+      className="xl:w-80 bg-white shadow-xl rounded-xl p-6 flex flex-col h-[650px] relative"
     >
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         찜한 메뉴
       </h2>
+
+      {onClose && (
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-2 right-3 p-2 text-gray-500 rounded-full cursor-pointer"
+          aria-label="닫기"
+        >
+          <XCircleIcon className="w-6 h-6" />
+        </button>
+      )}
 
       <div className="flex-grow overflow-y-auto space-y-4 pr-2">
         {likedFoods.length > 0 ? (
