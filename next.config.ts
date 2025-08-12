@@ -10,13 +10,37 @@ const nextConfig = {
         protocol: "https",
         hostname: "via.placeholder.com",
         port: "",
-        pathname: "/**", // via.placeholder.com 의 모든 경로 허용
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "i.namu.wiki",
         port: "",
-        pathname: "/i/**", // i.namu.wiki 의 /i/ 로 시작하는 모든 경로 허용
+        pathname: "/i/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.ftcdn.net",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "blogfiles.naver.net",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "shop-phinf.pstatic.net",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "search.pstatic.net",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
