@@ -1,103 +1,219 @@
-import Image from "next/image";
+/** @format */
 
-export default function Home() {
+"use client";
+
+import { useEffect, useState } from "react";
+
+import { AnimatePresence } from "framer-motion";
+import FilterSection from "@/features/filter-food/FilterSection";
+import { Food } from "@/shared/types/type";
+import FoodWorldCup from "@/features/food-world-cup/FoodWorldCup";
+import LikedFoodsUI from "@/features/like-food/LikedFoodsUI";
+import RecommendCard from "@/features/recommend-food/RecommendCard";
+import { initialFood } from "@/shared/types/constants";
+
+export default function HomePage() {
+  const [currentFood, setCurrentFood] = useState<Food>(initialFood);
+  const [isLoading, setIsLoading] = useState(true);
+  const [likedFoods, setLikedFoods] = useState<Food[]>([]);
+  const [isPanelModalOpen, setIsPanelModalOpen] = useState(false);
+  const [isWorldCupActive, setIsWorldCupActive] = useState(false);
+  const [detailedFilters, setDetailedFilters] = useState<{
+    [key: string]: string;
+  }>({});
+
+  // --- 음식추천 API ---
+  const recommendFood = async (filters = detailedFilters) => {
+    setIsLoading(true);
+    const params = new URLSearchParams();
+    for (const key in filters) {
+      if (filters[key]) {
+        params.append(key, filters[key]);
+      }
+    }
+    try {
+      const response = await fetch(`/api/recommend?${params.toString()}`);
+      if (!response.ok) throw new Error("API response not ok");
+      const recommendedMenu = await response.json();
+      if (recommendedMenu) {
+        setCurrentFood(recommendedMenu);
+      } else {
+        alert("조건에 맞는 메뉴를 찾지 못했어요. 필터를 조정해 보세요!");
+        setCurrentFood(initialFood);
+      }
+    } catch (error) {
+      console.error("Failed to recommend food:", error);
+      alert("메뉴 추천 중 오류가 발생했습니다.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitialFood = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/recommend`);
+        if (!response.ok) throw new Error("API response not ok");
+        const recommendedMenu = await response.json();
+        setCurrentFood(recommendedMenu || initialFood);
+      } catch (error) {
+        console.error("Failed to fetch initial food:", error);
+        alert("초기 메뉴 추천 중 오류가 발생했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchInitialFood();
+  }, []);
+
+  // --- 필터 변경 로직 ---
+  const handleFilterChange = (key: string, value: string) => {
+    const newFilters = {
+      ...detailedFilters,
+      [key]: detailedFilters[key] === value ? "" : value,
+    };
+    setDetailedFilters(newFilters);
+  };
+
+  // --- 개인 필터 적용 ---
+  const handleDetailedSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
+
+  // --- 필터 초기화 ---
+  const resetFilters = () => {
+    const newFilters = { category: detailedFilters.category };
+    setDetailedFilters(newFilters);
+    recommendFood(newFilters);
+  };
+
+  // --- 유튜브 이동 로직 ---
+  const moveToYoutube = () => {
+    if (currentFood.name && currentFood.name !== "뭐먹지?") {
+      const query = `${currentFood.name} 먹방`;
+      const encodedQuery = encodeURIComponent(query);
+      const youtubeUrl = `https://www.youtube.com/results?search_query=${encodedQuery}`;
+      window.open(youtubeUrl, "_blank");
+    }
+  };
+
+  // --- 네이버 이동 로직 ---
+  const moveToNaverMap = () => {
+    if (currentFood.name && currentFood.name !== "뭐먹지?") {
+      const query = currentFood.name;
+      const encodedQuery = encodeURIComponent(query);
+      const naverMapUrl = `https://map.naver.com/p/search/${encodedQuery}`;
+      window.open(naverMapUrl, "_blank");
+    }
+  };
+
+  // --- 월드컵 찜하기 로직 ---
+  const handleLike = () => {
+    if (!currentFood || currentFood.id === 0) return;
+    const isAlreadyLiked = likedFoods.some(
+      (food) => food.id === currentFood.id
+    );
+    let updatedLikedFoods;
+    if (isAlreadyLiked) {
+      updatedLikedFoods = likedFoods.filter(
+        (food) => food.id !== currentFood.id
+      );
+    } else {
+      updatedLikedFoods = [...likedFoods, currentFood];
+    }
+    setLikedFoods(updatedLikedFoods);
+  };
+
+  // --- 월드컵 찜하기 제거 ---
+  const handleRemoveFromPanel = (id: number) => {
+    const updatedLikedFoods = likedFoods.filter((food) => food.id !== id);
+    setLikedFoods(updatedLikedFoods);
+    if (updatedLikedFoods.length === 0) {
+      setIsPanelModalOpen(false);
+    }
+  };
+
+  // --- 월드컵 실행 ---
+  const startWorldCup = () => {
+    if (likedFoods.length < 2) {
+      alert("월드컵을 시작하려면 2개 이상의 메뉴를 찜해야 합니다.");
+      return;
+    }
+    setIsWorldCupActive(true);
+  };
+
+  // --- 공유하기 로직 ---
+  const handleShare = async () => {
+    if (!currentFood || currentFood.id === 0) {
+      alert("공유할 메뉴가 추천되지 않았습니다.");
+      return;
+    }
+
+    // --- Web API 지원 확인 ---
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "오늘 뭐 먹을까?",
+          text: `오늘 메뉴로 '${currentFood.name}' 어때? 같이 먹자! 😋`,
+          url: window.location.href,
+        });
+        console.log("공유 성공!");
+      } catch (error) {
+        console.error("공유 실패:", error);
+      }
+    } else {
+      alert("이 브라우저에서는 공유하기 기능이 지원되지 않습니다.");
+    }
+  };
+
+  const isLiked = likedFoods.some((food) => food.id === currentFood.id);
+  const isDetailedFilterActive = Object.entries(detailedFilters).some(
+    ([key, value]) => key !== "category" && value
+  );
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
+      <div className="relative">
+        <div className="bg-white p-4 md:p-12 rounded-2xl shadow-xl w-full max-w-xl my-3 lg:my-6">
+          <RecommendCard
+            food={currentFood}
+            isLoading={isLoading}
+            isLiked={isLiked}
+            onRecommend={() => recommendFood(detailedFilters)}
+            onLike={handleLike}
+            onGoToYoutube={moveToYoutube}
+            onGoToNaverMap={moveToNaverMap}
+            onShare={handleShare}
+          />
+          <hr className="my-8 border-t-2 border-gray-200" />
+          <FilterSection
+            filters={detailedFilters}
+            isDetailedFilterActive={isDetailedFilterActive}
+            onFilterChange={handleFilterChange}
+            onDetailedSubmit={handleDetailedSubmit}
+            onResetFilters={resetFilters}
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </div>
+
+      <LikedFoodsUI
+        likedFoods={likedFoods}
+        isPanelModalOpen={isPanelModalOpen}
+        setIsPanelModalOpen={setIsPanelModalOpen}
+        onStartWorldCup={startWorldCup}
+        onRemoveFood={handleRemoveFromPanel}
+      />
+
+      <AnimatePresence>
+        {isWorldCupActive && (
+          <FoodWorldCup
+            initialFoods={likedFoods}
+            onClose={() => setIsWorldCupActive(false)}
+            setIsPanelModalOpen={setIsPanelModalOpen}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
