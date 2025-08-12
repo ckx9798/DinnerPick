@@ -67,7 +67,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <head>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         {/* 구글 애드센스 심사/연결 코드 */}
         <Script
           id="adsense-connect"
@@ -91,11 +93,7 @@ export default function RootLayout({
             gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
           `}
         </Script>
-      </head>
 
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
         <Navbar />
         {children}
       </body>
