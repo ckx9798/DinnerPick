@@ -89,13 +89,16 @@ export default function FoodWorldCup({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50 px-4"
     >
-      <button onClick={onClose} className="absolute top-4 right-4 text-white">
+      <button
+        onClick={handleFinalClose}
+        className="absolute top-4 right-4 text-white"
+      >
         <XIcon className="w-8 h-8" />
       </button>
 
-      <h2 className="text-4xl font-bold text-white mb-4 lg:mb-8">
+      <h2 className="text-3xl font-bold text-white mb-4 lg:mb-8">
         {getRoundTitle()}
       </h2>
 
@@ -133,7 +136,7 @@ export default function FoodWorldCup({
                 <div className="relative w-full h-64 md:h-80">
                   <WorldCupImage food={currentMatchup[0]} />
                 </div>
-                <h3 className="text-md lg:text-2xl font-bold text-white mt-4 group-hover:text-yellow-400">
+                <h3 className="text-md lg:text-2xl font-bold text-white mt-4 group-hover:text-yellow-400 hidden md:block">
                   {currentMatchup[0].name}
                 </h3>
               </motion.div>
@@ -149,7 +152,7 @@ export default function FoodWorldCup({
                 <div className="relative w-full h-64 md:h-80">
                   <WorldCupImage food={currentMatchup[1]} />
                 </div>
-                <h3 className="text-md lg:text-2xl font-bold text-white mt-4 group-hover:text-yellow-400">
+                <h3 className="text-md lg:text-2xl font-bold text-white mt-4 group-hover:text-yellow-400 hidden md:block">
                   {currentMatchup[1].name}
                 </h3>
               </motion.div>
