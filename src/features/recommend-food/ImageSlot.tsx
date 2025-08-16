@@ -54,8 +54,9 @@ export default function ImageSlot() {
               <Image
                 src={`/food/${imageName}`}
                 alt={imageName.split(".")[0]}
-                layout="fill"
-                objectFit="cover"
+                fill
+                className="object-cover"
+                sizes="(min-width: 1024px) 280px, 180px"
                 priority
               />
             </div>
