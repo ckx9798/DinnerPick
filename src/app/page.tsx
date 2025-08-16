@@ -2,19 +2,19 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
-
 import { AnimatePresence } from "framer-motion";
 import FilterSection from "@/features/filter-food/FilterSection";
 import { Food } from "@/shared/types/type";
 import FoodWorldCup from "@/features/food-world-cup/FoodWorldCup";
+import ImageSlot from "@/features/recommend-food/ImageSlot";
 import LikedFoodsUI from "@/features/like-food/LikedFoodsUI";
 import RecommendCard from "@/features/recommend-food/RecommendCard";
 import { initialFood } from "@/shared/types/constants";
+import { useState } from "react";
 
 export default function HomePage() {
   const [currentFood, setCurrentFood] = useState<Food>(initialFood);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [likedFoods, setLikedFoods] = useState<Food[]>([]);
   const [isPanelModalOpen, setIsPanelModalOpen] = useState(false);
   const [isWorldCupActive, setIsWorldCupActive] = useState(false);
@@ -48,24 +48,6 @@ export default function HomePage() {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchInitialFood = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/api/recommend`);
-        if (!response.ok) throw new Error("API response not ok");
-        const recommendedMenu = await response.json();
-        setCurrentFood(recommendedMenu || initialFood);
-      } catch (error) {
-        console.error("Failed to fetch initial food:", error);
-        alert("초기 메뉴 추천 중 오류가 발생했습니다.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchInitialFood();
-  }, []);
 
   // --- 필터 변경 로직 ---
   const handleFilterChange = (key: string, value: string) => {
@@ -175,7 +157,7 @@ export default function HomePage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
       <div className="relative">
-        <div className="bg-white p-4 md:p-12 rounded-2xl shadow-xl w-full max-w-xl my-3 lg:my-6">
+        <div className="bg-white p-4 md:p-12 rounded-2xl shadow-xl w-full max-w-xl my-3 lg:my-6 lg:w-xl">
           <RecommendCard
             food={currentFood}
             isLoading={isLoading}
