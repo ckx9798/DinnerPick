@@ -1,11 +1,13 @@
 /** @format */
 
 import { AnimatePresence, motion } from "framer-motion";
-import { FaHeart, FaMapMarkedAlt, FaShareAlt, FaYoutube } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
+import ActionButtons from "./ActionButtons";
 import { Food } from "@/shared/types/type";
 import Image from "next/image";
+import ImageSlot from "./ImageSlot";
+import OrderModal from "./OrderModal";
 import { initialFood } from "@/shared/types/constants";
 
 interface RecommendCardProps {
@@ -32,6 +34,7 @@ export default function RecommendCard({
 }: RecommendCardProps) {
   // --- 이미지 에러 관리 ---
   const [isImageError, setIsImageError] = useState(false);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
   useEffect(() => {
     setIsImageError(false);
@@ -39,27 +42,25 @@ export default function RecommendCard({
 
   return (
     <>
-      <div className="relative w-full aspect-[4/3] mb-6 rounded-lg bg-gray-200">
-        <AnimatePresence mode="wait">
-          {isLoading ? (
+      <div className="relative w-full aspect-[4/3] mb-6 rounded-lg bg-white">
+        <AnimatePresence>
+          {isLoading && (
             <motion.div
-              key="loading"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="w-full h-full bg-gray-300 rounded-lg flex items-center justify-center animate-pulse"
+              key="slot"
+              className="absolute inset-0"
+              exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.3 } }}
             >
-              <span className="text-gray-200 font-medium">...</span>
+              <ImageSlot />
             </motion.div>
-          ) : (
+          )}
+
+          {!isLoading && (
             <motion.div
               key={food.id || "final"}
-              initial={{ opacity: 0, scale: 0.95 }}
+              className="absolute inset-0"
+              initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.4 }}
-              className="w-full h-full"
+              transition={{ duration: 0.5 }}
             >
               <Image
                 src={
@@ -69,7 +70,7 @@ export default function RecommendCard({
                 }
                 alt={food.name}
                 fill
-                className="rounded-lg shadow-md object-cover"
+                className="rounded-lg object-cover"
                 priority
                 onError={() => setIsImageError(true)}
               />
@@ -83,51 +84,17 @@ export default function RecommendCard({
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
           {food.name}
         </h2>
-        <p className="text-gray-600 mt-2 text-xs md:text-md">
+        <p className="text-gray-600 mt-2 text-xs md:text-lg">
           {food.description}
         </p>
-        <div className="flex justify-center space-x-4 md:space-x-8 mt-5">
-          {/* 찜하기 */}
-          <div
-            className={`flex flex-col items-center cursor-pointer transition-colors duration-200 ${
-              isLiked ? "text-pink-500" : "text-gray-600 hover:text-pink-400"
-            }`}
-            onClick={onLike}
-          >
-            <FaHeart className="w-6 h-6 md:w-8 md:h-8" />
-            <p className="text-xs md:text-sm font-semibold mt-1">
-              월드컵 찜하기
-            </p>
-          </div>
-          {/* 유튜브 */}
-          <div
-            className="flex flex-col items-center text-gray-600 hover:text-red-500 cursor-pointer"
-            onClick={onGoToYoutube}
-          >
-            <FaYoutube className="w-6 h-6 md:w-8 md:h-8" />
-            <p className="text-xs md:text-sm font-semibold mt-1">
-              관련 먹방보기
-            </p>
-          </div>
-          {/* 네이버 */}
-          <div
-            className="flex flex-col items-center text-gray-600 hover:text-yellow-500 cursor-pointer"
-            onClick={onGoToNaverMap}
-          >
-            <FaMapMarkedAlt className="w-6 h-6 md:w-8 md:h-8" />
-            <p className="text-xs md:text-sm font-semibold mt-1">
-              주변 맛집찾기
-            </p>
-          </div>
-          {/* 공유하기 */}
-          <div
-            className="flex flex-col items-center text-gray-600 hover:text-blue-500 cursor-pointer"
-            onClick={onShare}
-          >
-            <FaShareAlt className="w-6 h-6 md:w-8 md:h-8" />
-            <p className="text-xs md:text-sm font-semibold mt-1">공유하기</p>
-          </div>
-        </div>
+        <ActionButtons
+          isLiked={isLiked}
+          onLike={onLike}
+          onGoToYoutube={onGoToYoutube}
+          onGoToNaverMap={onGoToNaverMap}
+          onShare={onShare}
+          onOpenOrderModal={() => setIsOrderModalOpen(true)}
+        />
       </div>
 
       {/* --- 메뉴 변경 버튼 --- */}
@@ -140,6 +107,12 @@ export default function RecommendCard({
       >
         다른 메뉴 추천
       </motion.button>
+
+      <OrderModal
+        isOpen={isOrderModalOpen}
+        onClose={() => setIsOrderModalOpen(false)}
+        foodName={food.name}
+      />
     </>
   );
 }
