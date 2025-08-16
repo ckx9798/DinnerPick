@@ -23,6 +23,7 @@ export default function FilterModal({
   onResetFilters,
 }: FilterModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
+    e.stopPropagation();
     onDetailedSubmit(e);
     onClose();
   };
