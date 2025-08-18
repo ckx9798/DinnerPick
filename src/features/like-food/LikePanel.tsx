@@ -48,7 +48,7 @@ export default function LikedPanel({
           likedFoods.map((food) => (
             <div
               key={food.id}
-              className="flex items-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100"
+              className="flex items-center px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-100"
             >
               <span className="flex-grow font-semibold text-gray-700 px-3">
                 {food.name}

@@ -103,7 +103,7 @@ export default function RecommendCard({
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         disabled={isLoading}
-        className="w-full bg-emerald-500 text-white font-bold py-3 rounded-lg hover:bg-emerald-600 transition-colors duration-300 disabled:bg-gray-400 cursor-pointer"
+        className="w-full bg-emerald-500 text-white font-bold py-3 rounded-xl hover:bg-emerald-600 transition-colors duration-300 disabled:bg-gray-400 cursor-pointer"
       >
         다른 메뉴 추천
       </motion.button>

@@ -52,7 +52,7 @@ export default function FilterSection({
       {/* --- 개인 상세 조건 설정 영역 ---  */}
       <motion.button
         onClick={() => setIsModalOpen(true)}
-        className={`w-full font-bold py-3 mb-3 rounded-lg transition-colors duration-300 flex items-center justify-center cursor-pointer ${
+        className={`w-full font-bold py-3 mb-3 rounded-xl transition-colors duration-300 flex items-center justify-center cursor-pointer ${
           isDetailedFilterActive
             ? "bg-indigo-600 text-white shadow-md font-semibold"
             : "bg-blue-500 text-white hover:bg-indigo-600"

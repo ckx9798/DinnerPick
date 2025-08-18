@@ -155,9 +155,9 @@ export default function HomePage() {
   );
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4 font-sans">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 font-sans">
       <div className="relative">
-        <div className="bg-white p-4 md:p-12 rounded-2xl shadow-xl w-full max-w-xl my-3 lg:my-6 lg:w-xl">
+        <div className="bg-white w-screen p-3 md:p-12 lg:rounded-2xl shadow-xl min-w-[300px] lg:my-6 lg:w-xl">
           <RecommendCard
             food={currentFood}
             isLoading={isLoading}
