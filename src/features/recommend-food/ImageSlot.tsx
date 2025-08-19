@@ -57,7 +57,8 @@ export default function ImageSlot() {
                 fill
                 className="object-cover"
                 sizes="(min-width: 1024px) 280px, 180px"
-                priority
+                priority={index < 3}
+                placeholder="blur"
               />
             </div>
           </SwiperSlide>
