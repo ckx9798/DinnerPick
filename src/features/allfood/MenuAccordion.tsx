@@ -27,19 +27,35 @@ export default function MenuAccordion({ data }: MenuAccordionProps) {
     return <p className="mt-4 text-center">표시할 메뉴가 없습니다.</p>;
   }
 
+  const NAME: Record<string, string> = {
+    korean: "한식",
+    chinese: "중식",
+    fastfood: "패스트푸드",
+    japanese: "일식",
+    italian: "이탈리아",
+    asian: "아시안",
+    mexican: "멕시칸",
+    bunsik: "분식",
+  };
   return (
     <div className="space-y-4">
       {categories.map((category) => {
         const isOpen = openCategories[category];
 
         return (
-          <div key={category} className="border border-gray-200 rounded-lg">
+          <div
+            key={category}
+            className="border border-gray-200 rounded-2xl bg-gray-50"
+          >
             <button
               onClick={() => handleToggleCategory(category)}
               className="w-full flex justify-between items-center p-4 text-left"
             >
               <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-                {category}
+                {`${NAME[category]} (${category})`}
+                {/* <span> ({category})</span> */}
+
+                {/* <h2>{`${NAME[category]} (${category})`}</h2> */}
               </h2>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
