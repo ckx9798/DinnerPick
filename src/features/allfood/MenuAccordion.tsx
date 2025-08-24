@@ -53,9 +53,6 @@ export default function MenuAccordion({ data }: MenuAccordionProps) {
             >
               <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
                 {`${NAME[category]} (${category})`}
-                {/* <span> ({category})</span> */}
-
-                {/* <h2>{`${NAME[category]} (${category})`}</h2> */}
               </h2>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +73,7 @@ export default function MenuAccordion({ data }: MenuAccordionProps) {
             </button>
 
             {isOpen && (
-              <div className="py-3 px-1 lg:px-4 border-t border-gray-200">
+              <div className="py-3 px-1 lg:px-2 border-t border-gray-200">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-x-1 lg:gap-x-4 gap-y-4 lg:gap-y-6">
                   {data[category].map((menu) => (
                     <MenuCard key={menu.id} menu={menu} />
